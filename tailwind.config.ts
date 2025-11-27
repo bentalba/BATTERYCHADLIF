@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,16 +50,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        "electric-blue": {
+          DEFAULT: "hsl(var(--electric-blue))",
+          hover: "hsl(var(--electric-blue-hover))",
         },
+        "energy-orange": {
+          DEFAULT: "hsl(var(--energy-orange))",
+          hover: "hsl(var(--energy-orange-hover))",
+        },
+        "success-green": "hsl(var(--success-green))",
+        "danger-red": "hsl(var(--danger-red))",
+        "soft-grey": "hsl(var(--soft-grey))",
+        "deep-black": "hsl(var(--deep-black))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -84,6 +89,11 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in-up": "fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+        "scale-in": "scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+        "slide-in": "slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+        "pulse": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "pulse-marker": "pulseMarker 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },
