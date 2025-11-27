@@ -1,16 +1,31 @@
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Navigation from "@/components/Navigation";
 import BatteryFinder from "@/components/BatteryFinder";
 import ValueCard from "@/components/ValueCard";
-import ProductCard from "@/components/ProductCard";
-import PremiumBattery from "@/components/PremiumBattery";
-import VoltageAnimation from "@/components/VoltageAnimation";
+import ProductCardPremium from "@/components/ProductCardPremium";
 import EmergencyBar from "@/components/EmergencyBar";
 import MobileStickyBar from "@/components/MobileStickyBar";
+import HeroBattery3D from "@/components/HeroBattery3D";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import LiveActivityCounter from "@/components/LiveActivityCounter";
+import LogoLoop from "@/components/LogoLoop";
+import FAQSection from "@/components/FAQSection";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Wrench, Recycle, Truck, Phone, MessageCircle, ChevronDown, ChevronRight, Zap, MapPin, X, Plus, Minus, Star, Clock } from "lucide-react";
-import { products, getBestSellers, getProductsByCategory, getBatteryImage, getBrandLogo, type Product } from "@/data/products";
+import { duration, ease, spring, scrollReveal } from "@/lib/motion";
+import { Wrench, Recycle, Truck, Phone, MessageCircle, ChevronDown, ChevronRight, Zap, MapPin, X, Plus, Minus, Star, Clock, Shield, Award, Battery, ArrowRight } from "lucide-react";
+import { products, getBestSellers, getProductsByCategory, getBatteryImage, type Product } from "@/data/products";
+
+// Brand logos for the animated loop
+const brandLogos = [
+  { src: "/logos/varta.png", alt: "VARTA", title: "VARTA" },
+  { src: "/logos/exide.jpeg", alt: "EXIDE", title: "EXIDE" },
+  { src: "/logos/bosch.jpg", alt: "BOSCH", title: "BOSCH" },
+  { src: "/logos/tudor.png", alt: "TUDOR", title: "TUDOR" },
+  { src: "/logos/electra.png", alt: "ELECTRA", title: "ELECTRA" },
+  { src: "/logos/alma.jpeg", alt: "ALMA", title: "ALMA" },
+];
 
 interface CartItem {
   name: string;
@@ -168,7 +183,7 @@ const Index = () => {
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pb-20 md:pb-0">
       {/* Emergency SOS Bar - Top priority for stranded users */}
       <EmergencyBar />
       
@@ -177,298 +192,286 @@ const Index = () => {
         onCartClick={() => setIsCartOpen(true)}
       />
 
-      {/* HERO SECTION - Premium Design with Animated Wires */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/30 to-white" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,113,227,0.08),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(34,197,94,0.05),transparent_50%)]" />
-        
-        {/* ANIMATED CAR BATTERY CABLES - Red (+) and Black (-) */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          
-          {/* RED CABLE (+) - Thick jumper cable style flowing left to right */}
-          <svg className="absolute top-[18%] left-0 w-full h-40" viewBox="0 0 1440 160" preserveAspectRatio="none">
-            {/* Cable shadow */}
-            <path 
-              d="M-50,85 C150,40 300,120 500,70 C700,20 900,130 1100,60 C1250,10 1400,90 1550,80" 
-              fill="none" 
-              stroke="rgba(0,0,0,0.15)" 
-              strokeWidth="22"
-              strokeLinecap="round"
-            />
-            {/* Main cable body - thick rubber look */}
-            <path 
-              d="M-50,80 C150,35 300,115 500,65 C700,15 900,125 1100,55 C1250,5 1400,85 1550,75" 
-              fill="none" 
-              stroke="url(#redCableGradient)" 
-              strokeWidth="18"
-              strokeLinecap="round"
-            />
-            {/* Cable highlight - gives 3D rubber effect */}
-            <path 
-              d="M-50,75 C150,30 300,110 500,60 C700,10 900,120 1100,50 C1250,0 1400,80 1550,70" 
-              fill="none" 
-              stroke="rgba(255,255,255,0.3)" 
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            {/* Electricity spark traveling along red cable */}
-            <circle r="6" fill="#fff" style={{ filter: 'drop-shadow(0 0 10px #ff0000) drop-shadow(0 0 20px #ff6666)' }}>
-              <animateMotion dur="2.5s" repeatCount="indefinite" path="M-50,80 C150,35 300,115 500,65 C700,15 900,125 1100,55 C1250,5 1400,85 1550,75" />
-            </circle>
-            <circle r="3" fill="#ffcccc">
-              <animateMotion dur="2.5s" repeatCount="indefinite" begin="0.3s" path="M-50,80 C150,35 300,115 500,65 C700,15 900,125 1100,55 C1250,5 1400,85 1550,75" />
-            </circle>
-            {/* Red cable clamp at start */}
-            <g transform="translate(-30, 60)">
-              <rect x="0" y="0" width="40" height="50" rx="5" fill="#dc2626" />
-              <rect x="5" y="5" width="30" height="15" rx="2" fill="#991b1b" />
-              <text x="20" y="38" fill="#fff" fontSize="20" fontWeight="bold" textAnchor="middle">+</text>
-            </g>
-            <defs>
-              <linearGradient id="redCableGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#ef4444" />
-                <stop offset="30%" stopColor="#dc2626" />
-                <stop offset="70%" stopColor="#b91c1c" />
-                <stop offset="100%" stopColor="#991b1b" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          {/* BLACK CABLE (-) - Thick jumper cable style flowing right to left */}
-          <svg className="absolute bottom-[15%] left-0 w-full h-40" viewBox="0 0 1440 160" preserveAspectRatio="none">
-            {/* Cable shadow */}
-            <path 
-              d="M1550,75 C1300,120 1150,30 950,90 C750,150 550,40 350,100 C150,160 0,60 -100,85" 
-              fill="none" 
-              stroke="rgba(0,0,0,0.2)" 
-              strokeWidth="22"
-              strokeLinecap="round"
-            />
-            {/* Main cable body - thick rubber look */}
-            <path 
-              d="M1550,70 C1300,115 1150,25 950,85 C750,145 550,35 350,95 C150,155 0,55 -100,80" 
-              fill="none" 
-              stroke="url(#blackCableGradient)" 
-              strokeWidth="18"
-              strokeLinecap="round"
-            />
-            {/* Cable highlight */}
-            <path 
-              d="M1550,65 C1300,110 1150,20 950,80 C750,140 550,30 350,90 C150,150 0,50 -100,75" 
-              fill="none" 
-              stroke="rgba(255,255,255,0.15)" 
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            {/* Electricity spark traveling along black cable */}
-            <circle r="6" fill="#fff" style={{ filter: 'drop-shadow(0 0 10px #666) drop-shadow(0 0 20px #999)' }}>
-              <animateMotion dur="3s" repeatCount="indefinite" path="M1550,70 C1300,115 1150,25 950,85 C750,145 550,35 350,95 C150,155 0,55 -100,80" />
-            </circle>
-            <circle r="3" fill="#ccc">
-              <animateMotion dur="3s" repeatCount="indefinite" begin="0.4s" path="M1550,70 C1300,115 1150,25 950,85 C750,145 550,35 350,95 C150,155 0,55 -100,80" />
-            </circle>
-            {/* Black cable clamp at end */}
-            <g transform="translate(1500, 50)">
-              <rect x="0" y="0" width="40" height="50" rx="5" fill="#1f2937" />
-              <rect x="5" y="5" width="30" height="15" rx="2" fill="#111827" />
-              <text x="20" y="38" fill="#fff" fontSize="20" fontWeight="bold" textAnchor="middle">−</text>
-            </g>
-            <defs>
-              <linearGradient id="blackCableGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#4b5563" />
-                <stop offset="30%" stopColor="#374151" />
-                <stop offset="70%" stopColor="#1f2937" />
-                <stop offset="100%" stopColor="#111827" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          {/* Electric sparks/particles */}
-          <div className="absolute top-[20%] left-[10%] w-3 h-3 bg-red-500 rounded-full animate-float-particle opacity-80" style={{ animationDelay: '0s', filter: 'drop-shadow(0 0 6px #ef4444)' }} />
-          <div className="absolute top-[25%] right-[20%] w-2 h-2 bg-red-400 rounded-full animate-float-particle opacity-60" style={{ animationDelay: '0.5s' }} />
-          <div className="absolute bottom-[20%] left-[25%] w-3 h-3 bg-gray-600 rounded-full animate-float-particle opacity-70" style={{ animationDelay: '1s', filter: 'drop-shadow(0 0 4px #666)' }} />
-          <div className="absolute bottom-[25%] right-[15%] w-2 h-2 bg-gray-500 rounded-full animate-float-particle opacity-50" style={{ animationDelay: '1.5s' }} />
-          
-          {/* Yellow electricity sparks */}
-          <div className="absolute top-[22%] left-[40%] w-1.5 h-1.5 bg-yellow-300 rounded-full animate-spark opacity-90" style={{ animationDelay: '0.2s', filter: 'drop-shadow(0 0 8px #fbbf24)' }} />
-          <div className="absolute bottom-[18%] right-[35%] w-1.5 h-1.5 bg-yellow-300 rounded-full animate-spark opacity-90" style={{ animationDelay: '0.7s', filter: 'drop-shadow(0 0 8px #fbbf24)' }} />
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          HERO SECTION - "WOW" Premium Design 
+          Inspired by Apple's product pages with 3D floating battery
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <section ref={heroRef} className="relative min-h-screen overflow-hidden pt-20">
+        {/* Animated gradient mesh background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,113,227,0.15),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_100%_100%,rgba(34,197,94,0.1),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_0%_50%,rgba(255,107,0,0.08),transparent)]" />
         </div>
         
-        {/* Decorative grid pattern */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
+        {/* Animated grid lines */}
+        <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(90deg, #000 1px, transparent 1px),
+              linear-gradient(180deg, #000 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+          }} />
+        </div>
 
-        {/* Background Battery */}
-        {backgroundBatteryOpacity > 0 && (
-          <div 
-            className="fixed inset-0 flex items-center justify-center pointer-events-none z-0"
-            style={{ opacity: backgroundBatteryOpacity }}
-          >
-            <div className="w-[180%] max-w-5xl">
-              <PremiumBattery chargeLevel={batteryCharge} isBackground />
-            </div>
-          </div>
-        )}
+        {/* Floating orbs */}
+        <motion.div 
+          className="absolute top-20 left-[10%] w-72 h-72 rounded-full blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(0,113,227,0.15) 0%, transparent 70%)' }}
+          animate={{ 
+            x: [0, 30, 0], 
+            y: [0, -20, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-40 right-[15%] w-96 h-96 rounded-full blur-3xl"
+          style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)' }}
+          animate={{ 
+            x: [0, -40, 0], 
+            y: [0, 30, 0],
+            scale: [1, 1.15, 1]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center space-y-8 max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center min-h-[calc(100vh-5rem)]">
             
-            {/* Trust badge - VERY PROMINENT */}
-            <div className="inline-flex items-center gap-4 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#0071E3] to-[#00a8ff] shadow-2xl shadow-blue-500/30 animate-pulse-subtle">
-              <div className="flex -space-x-3">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#0071E3] text-sm font-bold ring-4 ring-white/50 shadow-lg">K</div>
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#0071E3] text-sm font-bold ring-4 ring-white/50 shadow-lg">M</div>
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#0071E3] text-sm font-bold ring-4 ring-white/50 shadow-lg">S</div>
-              </div>
-              <div className="h-8 w-px bg-white/30" />
-              <div className="flex flex-col items-start">
-                <span className="text-3xl font-black text-white tracking-tight">10 000+</span>
-                <span className="text-sm text-white/90 font-medium">clients satisfaits</span>
-              </div>
-              <div className="flex items-center gap-1 ml-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400 drop-shadow-sm" />
-                ))}
-              </div>
-            </div>
-
-            {/* Main headline with gradient */}
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl lg:text-8xl font-bold tracking-tight">
-                <span className="text-gray-900">Démarrez.</span>
-                <br />
-                <span className="bg-gradient-to-r from-[#0071E3] via-[#00a8ff] to-[#22c55e] bg-clip-text text-transparent">
-                  Toujours.
-                </span>
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-                La référence des batteries auto à <span className="text-gray-900 font-medium">Kenitra</span>. 
-                Livraison express, installation gratuite, garantie 2 ans.
-              </p>
-            </div>
-
-            {/* Quick stats */}
-            <div className="flex flex-wrap justify-center gap-8 py-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">2h</div>
-                <div className="text-sm text-gray-500">Livraison express</div>
-              </div>
-              <div className="w-px h-12 bg-gray-200 hidden sm:block" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">-200 DH</div>
-                <div className="text-sm text-gray-500">Reprise ancienne</div>
-              </div>
-              <div className="w-px h-12 bg-gray-200 hidden sm:block" />
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900">2 ans</div>
-                <div className="text-sm text-gray-500">Garantie totale</div>
-              </div>
-            </div>
-
-            {/* Main Battery with Voltage Display */}
-            <div className="relative my-6">
-              <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
-                {/* Battery */}
-                <div
-                  className="relative transition-opacity duration-300 flex-1 max-w-md"
-                  style={{ opacity: Math.max(0.4, mainBatteryOpacity) }}
-                >
-                  <PremiumBattery chargeLevel={batteryCharge} />
-                </div>
-                
-                {/* Voltage Animation Panel - Desktop Only */}
-                <div className="hidden lg:block w-full max-w-sm">
-                  <VoltageAnimation chargeLevel={batteryCharge} />
-                </div>
-              </div>
-              
-              {/* Charged message */}
-              {batteryCharge >= 95 && (
-                <div className="mt-6 flex justify-center animate-fade-in">
-                  <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500/10 border border-green-500/30 backdrop-blur">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-green-600 font-medium">Votre batterie chargée vous attend !</span>
-                    <Zap className="w-4 h-4 text-green-500" />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Battery Finder with enhanced styling */}
-            <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-r from-[#0071E3]/10 via-transparent to-[#22c55e]/10 rounded-3xl blur-2xl" />
-              <BatteryFinder />
-            </div>
-
-            {/* Scroll indicator */}
-            <div
-              className="flex flex-col items-center gap-2 pt-6 cursor-pointer group"
-              onClick={() => document.getElementById('value-props')?.scrollIntoView({ behavior: 'smooth' })}
+            {/* LEFT SIDE - Content */}
+            <motion.div 
+              className="space-y-8 text-center lg:text-left order-2 lg:order-1"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <span className="text-sm text-gray-400 group-hover:text-[#0071E3] transition-colors">
-                Découvrez nos avantages
-              </span>
-              <div className="w-6 h-10 rounded-full border-2 border-gray-300 flex items-start justify-center p-2 group-hover:border-[#0071E3] transition-colors">
-                <div className="w-1 h-2 bg-gray-400 rounded-full animate-bounce group-hover:bg-[#0071E3]" />
+              {/* Trust badge */}
+              <motion.div 
+                className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border border-white/50"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="flex -space-x-2">
+                  {['K', 'M', 'S', 'A'].map((letter, i) => (
+                    <div key={i} className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0071E3] to-[#00a8ff] flex items-center justify-center text-white text-xs font-bold ring-2 ring-white">
+                      {letter}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                  ))}
+                </div>
+                <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-[#0071E3]">10 000+</span> clients
+                </span>
+              </motion.div>
+
+              {/* Main headline */}
+              <div className="space-y-4">
+                <motion.h1 
+                  className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.1]"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                  <span className="text-gray-900">L'énergie qui</span>
+                  <br />
+                  <span className="relative">
+                    <span className="bg-gradient-to-r from-[#0071E3] via-[#00a8ff] to-[#0071E3] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+                      vous fait avancer
+                    </span>
+                    {/* Underline accent */}
+                    <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 300 12" fill="none">
+                      <motion.path 
+                        d="M2 10C50 4 100 4 150 6C200 8 250 4 298 8" 
+                        stroke="url(#underlineGrad)" 
+                        strokeWidth="4" 
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                      />
+                      <defs>
+                        <linearGradient id="underlineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#0071E3" />
+                          <stop offset="100%" stopColor="#22c55e" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </span>
+                </motion.h1>
+                
+                <motion.p 
+                  className="text-xl md:text-2xl text-gray-500 max-w-xl leading-relaxed"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  Batteries premium à <span className="text-gray-900 font-semibold">Kenitra</span>. 
+                  Installation gratuite, livraison en 2h, garantie 2 ans.
+                </motion.p>
               </div>
-            </div>
+
+              {/* Value props row */}
+              <motion.div 
+                className="flex flex-wrap justify-center lg:justify-start gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                {[
+                  { icon: Truck, text: "Livraison 2h", color: "text-[#0071E3]" },
+                  { icon: Wrench, text: "Installation offerte", color: "text-green-500" },
+                  { icon: Shield, text: "Garantie 2 ans", color: "text-orange-500" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center ${item.color}`}>
+                      <item.icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">{item.text}</span>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* Trade-in highlight */}
+              <motion.div 
+                className="inline-flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
+                  <Recycle className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="text-2xl font-black text-orange-600">-200 DH</div>
+                  <div className="text-sm text-gray-600">Reprise de votre ancienne batterie</div>
+                </div>
+              </motion.div>
+
+              {/* CTA Buttons */}
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <button 
+                  className="btn-voir-batteries"
+                  onClick={() => productsRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <Battery className="w-5 h-5" />
+                  Voir les batteries
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+                <button 
+                  className="btn-trouver-batterie"
+                  onClick={() => document.querySelector('.battery-finder')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <span className="circle">
+                    <span className="icon arrow"></span>
+                  </span>
+                  <span className="button-text">Trouver ma batterie</span>
+                </button>
+              </motion.div>
+
+              {/* Live activity counter */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="flex justify-center lg:justify-start"
+              >
+                <LiveActivityCounter />
+              </motion.div>
+            </motion.div>
+
+            {/* RIGHT SIDE - 3D Battery */}
+            <motion.div 
+              className="relative order-1 lg:order-2 flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            >
+              {/* Glow behind battery */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-[120%] h-[120%] bg-gradient-to-br from-[#0071E3]/20 via-[#00a8ff]/10 to-[#22c55e]/20 rounded-full blur-3xl animate-pulse-subtle" />
+              </div>
+              
+              {/* 3D Battery */}
+              <div className="relative w-full max-w-lg">
+                <HeroBattery3D scrollProgress={scrollY / 500} />
+              </div>
+              
+              {/* Floating specs cards */}
+              <motion.div 
+                className="absolute -left-4 top-1/4 p-3 bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-white/50"
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <div className="text-xs text-gray-500">Voltage</div>
+                <div className="text-lg font-bold text-gray-900">12V</div>
+              </motion.div>
+              
+              <motion.div 
+                className="absolute -right-4 top-1/3 p-3 bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-white/50"
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              >
+                <div className="text-xs text-gray-500">Capacité</div>
+                <div className="text-lg font-bold text-[#0071E3]">70Ah</div>
+              </motion.div>
+              
+              <motion.div 
+                className="absolute left-1/4 -bottom-4 p-3 bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-white/50"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              >
+                <div className="text-xs text-gray-500">Courant</div>
+                <div className="text-lg font-bold text-green-500">640A</div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
+
+        {/* Scroll indicator */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          onClick={() => document.getElementById('value-props')?.scrollIntoView({ behavior: 'smooth' })}
+        >
+          <ChevronDown className="w-6 h-6 text-gray-400 animate-bounce" />
+        </motion.div>
       </section>
 
-      {/* VALUE PROPOSITIONS - Enhanced */}
-      <section id="value-props" className="py-24 bg-gradient-to-b from-gray-50 to-white">
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          BATTERY FINDER SECTION - Glass morphism floating widget
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <section className="py-20 bg-gradient-to-b from-white to-gray-50 battery-finder">
         <div className="container mx-auto px-6">
-          {/* Section header */}
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0071E3]/10 text-[#0071E3] text-sm font-medium mb-4">
-              Pourquoi nous choisir
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              L'excellence au service de votre véhicule
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Trouvez votre batterie en <span className="text-[#0071E3]">30 secondes</span>
             </h2>
-          </div>
+            <p className="text-lg text-gray-500">
+              Sélectionnez votre véhicule et découvrez la batterie parfaite
+            </p>
+          </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <ValueCard
-              icon={Wrench}
-              title="Installation Gratuite"
-              description="Installation professionnelle incluse dans toute la région de Kenitra"
-              delay={0}
-            />
-            <ValueCard
-              icon={Recycle}
-              title="Reprise jusqu'à 200 DH"
-              description="Échangez votre ancienne batterie et économisez sur votre achat"
-              delay={150}
-            />
-            <ValueCard
-              icon={Truck}
-              title="Livraison Rapide"
-              description="Livraison dans toute la région de Kenitra sous 24h"
-              delay={300}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* BRAND PARTNERS */}
-      <section className="py-16 border-y border-gray-100 bg-white">
-        <div className="container mx-auto px-6">
-          <p className="text-center text-sm text-gray-400 mb-8 uppercase tracking-wider font-medium">
-            Marques de confiance
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-            {['VARTA', 'EXIDE', 'BOSCH', 'TUDOR', 'FULMEN', 'DURACELL'].map((brand) => (
-              <div key={brand} className="text-2xl font-bold text-gray-400 hover:text-[#0071E3] transition-colors cursor-pointer">
-                {brand}
-              </div>
-            ))}
-          </div>
+          <BatteryFinder />
         </div>
       </section>
 
@@ -499,7 +502,7 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {getBestSellers().slice(0, 4).map((product) => (
-              <ProductCard
+              <ProductCardPremium
                 key={product.id}
                 name={product.name}
                 specs={product.specs}
@@ -519,7 +522,7 @@ const Index = () => {
           {/* More Products Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             {getProductsByCategory('voiture').slice(5, 9).map((product) => (
-              <ProductCard
+              <ProductCardPremium
                 key={product.id}
                 name={product.name}
                 specs={product.specs}
@@ -548,30 +551,30 @@ const Index = () => {
         </div>
       </section>
 
-      {/* TRUSTED BRANDS SECTION */}
-      <section className="py-16 bg-white border-y border-gray-100">
+      {/* TRUSTED BRANDS SECTION - LogoLoop Animation */}
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white border-y border-gray-100 overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="text-center mb-10">
-            <span className="text-sm font-semibold text-gray-400 uppercase tracking-widest">Marques officielles</span>
-            <h3 className="text-2xl font-bold text-gray-900 mt-2">Distributeur agréé des plus grandes marques</h3>
+            <span className="text-sm font-semibold text-[#0071E3] uppercase tracking-widest">Nos Partenaires</span>
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mt-2">
+              VARTA • EXIDE • BOSCH • TUDOR • ELECTRA • ALMA
+            </h3>
+            <p className="text-gray-500 mt-2">Distributeur officiel des marques leaders au Maroc</p>
           </div>
           
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            {['VARTA', 'EXIDE', 'BOSCH', 'TUDOR', 'FULMEN', 'OPTIMA'].map((brand) => (
-              <div key={brand} className="group flex flex-col items-center gap-2 grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
-                <img 
-                  src={getBrandLogo(brand)} 
-                  alt={`${brand} logo`}
-                  className="h-10 md:h-12 object-contain"
-                  onError={(e) => {
-                    // Fallback to text if logo fails to load
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }}
-                />
-                <span className="hidden text-xl font-bold text-gray-800">{brand}</span>
-              </div>
-            ))}
+          <div className="h-24 relative">
+            <LogoLoop
+              logos={brandLogos}
+              speed={50}
+              direction="left"
+              logoHeight={64}
+              gap={60}
+              hoverSpeed={0}
+              scaleOnHover
+              fadeOut
+              fadeOutColor="rgb(249, 250, 251)"
+              ariaLabel="Nos marques partenaires"
+            />
           </div>
         </div>
       </section>
@@ -592,9 +595,11 @@ const Index = () => {
             <div className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
               <img 
-                src="https://images.unsplash.com/photo-1586191582066-a29f3934f1a8?w=600&h=400&fit=crop&q=80" 
+                src="/products/poids-lourd.jpg" 
                 alt="Batteries Poids Lourds"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute top-4 left-4 z-20">
                 <span className="px-3 py-1 bg-[#FF6B00] text-white text-xs font-bold rounded-full">PRO</span>
@@ -611,7 +616,9 @@ const Index = () => {
               <img 
                 src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&h=400&fit=crop&q=80" 
                 alt="Batteries Marine"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute top-4 left-4 z-20">
                 <span className="px-3 py-1 bg-cyan-500 text-white text-xs font-bold rounded-full">MARINE</span>
@@ -628,7 +635,9 @@ const Index = () => {
               <img 
                 src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&h=400&fit=crop&q=80" 
                 alt="Batteries Solaire"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute top-4 left-4 z-20">
                 <span className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full">ECO</span>
@@ -678,6 +687,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* FAQ SECTION */}
+      <FAQSection />
+
       {/* CTA SECTION */}
       <section className="py-24 bg-gray-900 text-white relative overflow-hidden">
         {/* Animated background effects */}
@@ -712,6 +724,42 @@ const Index = () => {
                 <span className="relative z-10">WhatsApp</span>
               </Button>
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* VALUE PROPOSITIONS - Why Choose Us */}
+      <section id="value-props" className="py-24 bg-white">
+        <div className="container mx-auto px-6">
+          {/* Section header */}
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0071E3]/10 text-[#0071E3] text-sm font-medium mb-4">
+              Pourquoi nous choisir
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              L'excellence au service de votre véhicule
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <ValueCard
+              icon={Wrench}
+              title="Installation Gratuite"
+              description="Installation professionnelle incluse dans toute la région de Kenitra"
+              delay={0}
+            />
+            <ValueCard
+              icon={Recycle}
+              title="Reprise jusqu'à 200 DH"
+              description="Échangez votre ancienne batterie et économisez sur votre achat"
+              delay={150}
+            />
+            <ValueCard
+              icon={Truck}
+              title="Livraison Rapide"
+              description="Livraison dans toute la région de Kenitra sous 24h"
+              delay={300}
+            />
           </div>
         </div>
       </section>
@@ -945,6 +993,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+
+      {/* WhatsApp Floating Button */}
+      <WhatsAppButton />
 
       {/* Mobile Sticky CTA Bar */}
       <MobileStickyBar />

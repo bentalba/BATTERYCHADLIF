@@ -1,0 +1,165 @@
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Brand Logo */
+.loading-logo {
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  .loading-logo {
+    width: 220px;
+  }
+}
+
+/* Battery Grid Loader - Adapted from Uiverse.io by alexruix */
+.loader {
+  --cell-size: 40px;
+  --cell-spacing: 2px;
+  --cells: 3;
+  --total-size: calc(var(--cells) * (var(--cell-size) + 2 * var(--cell-spacing)));
+  display: flex;
+  flex-wrap: wrap;
+  width: var(--total-size);
+  height: var(--total-size);
+}
+
+.cell {
+  flex: 0 0 var(--cell-size);
+  margin: var(--cell-spacing);
+  background-color: transparent;
+  box-sizing: border-box;
+  border-radius: 6px;
+  animation: 1.5s ripple ease infinite;
+}
+
+.cell.d-0 {
+  animation-delay: 0ms;
+}
+
+.cell.d-1 {
+  animation-delay: 100ms;
+}
+
+.cell.d-2 {
+  animation-delay: 200ms;
+}
+
+.cell.d-3 {
+  animation-delay: 300ms;
+}
+
+.cell.d-4 {
+  animation-delay: 400ms;
+}
+
+/* Brand colors - Electric Blue to Green gradient */
+.cell:nth-child(1) {
+  --cell-color: #0071E3;
+}
+
+.cell:nth-child(2) {
+  --cell-color: #0088E8;
+}
+
+.cell:nth-child(3) {
+  --cell-color: #00A0ED;
+}
+
+.cell:nth-child(4) {
+  --cell-color: #00B8E8;
+}
+
+.cell:nth-child(5) {
+  --cell-color: #00C9D4;
+}
+
+.cell:nth-child(6) {
+  --cell-color: #00D9BF;
+}
+
+.cell:nth-child(7) {
+  --cell-color: #00E8A8;
+}
+
+.cell:nth-child(8) {
+  --cell-color: #22D968;
+}
+
+.cell:nth-child(9) {
+  --cell-color: #22C55E;
+}
+
+/* Animation */
+@keyframes ripple {
+  0% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+
+  30% {
+    background-color: var(--cell-color);
+    transform: scale(0.9);
+    box-shadow: 0 0 20px var(--cell-color);
+  }
+
+  60% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+
+  100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+}
+
+/* Brand Text */
+.loading-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.025em;
+}
+
+.loading-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .loader {
+    --cell-size: 52px;
+  }
+  
+  .loading-title {
+    font-size: 1.875rem;
+  }
+}

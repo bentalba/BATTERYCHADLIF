@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === PERFORMANCE OPTIMIZATIONS === */
+
+/* Smooth scrolling globally */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Hardware acceleration for animated elements */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize rendering for frequently animated elements */
+img, video {
+  content-visibility: auto;
+}
+
 /* BATTERIES CHADLI - Premium Design System with Moroccan Warmth */
 
 @layer base {
@@ -255,6 +284,11 @@
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
+  }
+  
+  /* Loading shimmer animation */
+  .animate-shimmer {
+    animation: shimmer 1.5s ease-in-out infinite;
   }
   
   /* Smooth text gradient */
@@ -541,4 +575,126 @@
 
 .animate-spark {
   animation: spark 0.8s ease-in-out infinite;
+}
+
+/* === ANIMATED BUTTONS === */
+
+/* Voir les batteries - Hover lift effect */
+.btn-voir-batteries {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #0071E3 0%, #00a8ff 100%);
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0px 8px 20px rgba(0, 113, 227, 0.3);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-voir-batteries:hover {
+  background: linear-gradient(135deg, #23c483 0%, #2ee89d 100%);
+  box-shadow: 0px 15px 30px rgba(46, 229, 157, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+.btn-voir-batteries:active {
+  transform: translateY(-1px);
+}
+
+/* Trouver ma batterie - Circle expand effect */
+.btn-trouver-batterie {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  text-decoration: none;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  width: 17rem;
+  height: 3.5rem;
+}
+
+.btn-trouver-batterie .circle {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  position: absolute;
+  left: 0;
+  display: block;
+  margin: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #0071E3;
+  border-radius: 1.75rem;
+}
+
+.btn-trouver-batterie .circle .icon {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: #fff;
+}
+
+.btn-trouver-batterie .circle .icon.arrow {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  left: 0.75rem;
+  width: 1.125rem;
+  height: 0.125rem;
+  background: none;
+}
+
+.btn-trouver-batterie .circle .icon.arrow::before {
+  position: absolute;
+  content: "";
+  top: -0.29rem;
+  right: 0.0625rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top: 0.125rem solid #fff;
+  border-right: 0.125rem solid #fff;
+  transform: rotate(45deg);
+}
+
+.btn-trouver-batterie .button-text {
+  transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  position: absolute;
+  top: 0;
+  left: 3.5rem;
+  right: 0;
+  bottom: 0;
+  padding: 0 0.5rem;
+  margin: 0;
+  color: #0071E3;
+  font-weight: 700;
+  line-height: 3.5rem;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 1px;
+}
+
+.btn-trouver-batterie:hover .circle {
+  width: 100%;
+}
+
+.btn-trouver-batterie:hover .circle .icon.arrow {
+  background: #fff;
+  transform: translate(1rem, 0);
+}
+
+.btn-trouver-batterie:hover .button-text {
+  color: #fff;
 }
