@@ -24,7 +24,7 @@ const BatteryFinder = () => {
   const isComplete = make && model && year;
 
   return (
-    <Card className="glass-card max-w-2xl mx-auto p-8 animate-fade-in-up">
+    <Card className="glass-card-premium max-w-2xl mx-auto p-8 animate-fade-in-up shadow-xl border-gradient-primary">
       <div className="space-y-6">
         <div className="space-y-2">
           <label className="text-sm font-medium text-muted-foreground">Marque</label>

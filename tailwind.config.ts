@@ -53,15 +53,40 @@ export default {
         "electric-blue": {
           DEFAULT: "hsl(var(--electric-blue))",
           hover: "hsl(var(--electric-blue-hover))",
+          light: "hsl(var(--electric-blue-light))",
+          dark: "hsl(var(--electric-blue-dark))",
         },
         "energy-orange": {
           DEFAULT: "hsl(var(--energy-orange))",
           hover: "hsl(var(--energy-orange-hover))",
+          light: "hsl(var(--energy-orange-light))",
         },
-        "success-green": "hsl(var(--success-green))",
+        "accent-cyan": {
+          DEFAULT: "hsl(var(--accent-cyan))",
+          light: "hsl(var(--accent-cyan-light))",
+        },
+        "success-green": {
+          DEFAULT: "hsl(var(--success-green))",
+          light: "hsl(var(--success-green-light))",
+      },
+      boxShadow: {
+        'sm': 'var(--shadow-sm)',
+        'md': 'var(--shadow-md)',
+        'lg': 'var(--shadow-lg)',
+        'xl': 'var(--shadow-xl)',
+        'colored-blue': 'var(--shadow-colored-blue)',
+        'colored-orange': 'var(--shadow-colored-orange)',
+        'glow-blue': 'var(--shadow-glow-blue)',
+        'glow-orange': 'var(--shadow-glow-orange)',
+      },
         "danger-red": "hsl(var(--danger-red))",
         "soft-grey": "hsl(var(--soft-grey))",
+        "medium-grey": "hsl(var(--medium-grey))",
         "deep-black": "hsl(var(--deep-black))",
+        "accent-purple": {
+          DEFAULT: "hsl(var(--accent-purple))",
+          light: "hsl(var(--accent-purple-light))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

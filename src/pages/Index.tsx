@@ -17,7 +17,8 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="absolute inset-0 bg-gradient-mesh" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(0,113,227,0.1),transparent_50%)]" />
         
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center space-y-8 max-w-4xl mx-auto">
@@ -50,7 +51,9 @@ const Index = () => {
       </section>
 
       {/* Value Propositions */}
-      <section className="py-24 bg-soft-grey">
+      <section className="py-24 bg-soft-grey relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-electric-blue-light rounded-full blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-energy-orange-light rounded-full blur-3xl opacity-20 translate-x-1/2 translate-y-1/2" />
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <ValueCard
@@ -76,7 +79,8 @@ const Index = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-24">
+      <section className="py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-soft-grey/30 to-transparent" />
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
