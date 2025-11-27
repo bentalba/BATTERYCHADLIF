@@ -5,7 +5,10 @@ import ValueCard from "@/components/ValueCard";
 import ProductCard from "@/components/ProductCard";
 import PremiumBattery from "@/components/PremiumBattery";
 import VoltageAnimation from "@/components/VoltageAnimation";
+import EmergencyBar from "@/components/EmergencyBar";
+import MobileStickyBar from "@/components/MobileStickyBar";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { Wrench, Recycle, Truck, Phone, MessageCircle, ChevronDown, ChevronRight, Zap, MapPin, X, Plus, Minus, Star, Clock } from "lucide-react";
 import { products, getBestSellers, getProductsByCategory, getBatteryImage, getBrandLogo, type Product } from "@/data/products";
 
@@ -24,6 +27,59 @@ const Index = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const productsRef = useRef<HTMLDivElement>(null);
   const scrollRAF = useRef<number | null>(null);
+  const { toast } = useToast();
+
+  // Live activity notifications - Social proof
+  useEffect(() => {
+    const cities = ["Centre Ville", "Bir Rami", "Maamora", "Saknia", "Mehdia", "Ouled Oujih"];
+    const batteries = ["VARTA E13", "EXIDE EK700 AGM", "TUDOR TC700", "BOSCH S5", "FULMEN FC700"];
+    const actions = [
+      { text: "vient de commander", icon: "🛒" },
+      { text: "a reçu sa batterie", icon: "✅" },
+      { text: "a demandé un dépannage", icon: "🚗" },
+      { text: "vient d'être installé", icon: "🔧" },
+    ];
+    
+    // First toast after 8 seconds
+    const initialTimeout = setTimeout(() => {
+      showRandomToast();
+    }, 8000);
+
+    // Then every 20-35 seconds randomly
+    const interval = setInterval(() => {
+      showRandomToast();
+    }, 20000 + Math.random() * 15000);
+
+    function showRandomToast() {
+      const randomCity = cities[Math.floor(Math.random() * cities.length)];
+      const randomBattery = batteries[Math.floor(Math.random() * batteries.length)];
+      const randomAction = actions[Math.floor(Math.random() * actions.length)];
+      const minutesAgo = Math.floor(Math.random() * 10) + 1;
+      
+      toast({
+        description: (
+          <div className="flex items-center gap-3">
+            <span className="text-lg">{randomAction.icon}</span>
+            <div>
+              <p className="font-medium text-gray-900">
+                Client à <span className="text-[#0071E3]">{randomCity}</span>
+              </p>
+              <p className="text-sm text-gray-500">
+                {randomAction.text} une {randomBattery} · il y a {minutesAgo} min
+              </p>
+            </div>
+          </div>
+        ),
+        duration: 5000,
+        className: "bg-white/95 backdrop-blur-xl border border-gray-100 shadow-xl"
+      });
+    }
+
+    return () => {
+      clearTimeout(initialTimeout);
+      clearInterval(interval);
+    };
+  }, [toast]);
 
   // Initial charging animation on page load
   useEffect(() => {
@@ -113,6 +169,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Emergency SOS Bar - Top priority for stranded users */}
+      <EmergencyBar />
+      
       <Navigation
         cartItemsCount={cartCount}
         onCartClick={() => setIsCartOpen(true)}
@@ -886,6 +945,9 @@ const Index = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile Sticky CTA Bar */}
+      <MobileStickyBar />
     </div>
   );
 };

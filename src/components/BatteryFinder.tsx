@@ -54,20 +54,29 @@ const BatteryFinder = () => {
             <p className="text-sm text-gray-500 mt-1">Résultat instantané • Prix imbattables</p>
           </div>
 
-          {/* Vehicle Type Selector */}
-          <div className="flex justify-center gap-2 p-1.5 bg-gray-100/80 rounded-2xl">
+          {/* Vehicle Type Selector - Visual Cards */}
+          <div className="grid grid-cols-3 gap-3">
             {vehicleTypes.map(({ id, icon: Icon, label }) => (
               <button
                 key={id}
                 onClick={() => { setVehicleType(id); setMake(""); setModel(""); setYear(""); }}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                className={`relative flex flex-col items-center justify-center p-4 md:p-5 rounded-2xl border-2 transition-all duration-300 overflow-hidden group ${
                   vehicleType === id
-                    ? 'bg-white text-[#0071E3] shadow-md'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'border-[#0071E3] bg-gradient-to-br from-[#0071E3]/5 to-[#00a8ff]/10 text-[#0071E3] shadow-lg shadow-blue-500/10 scale-[1.02]'
+                    : 'border-gray-100 bg-white text-gray-400 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-600'
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                {label}
+                {/* Active indicator glow */}
+                {vehicleType === id && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#0071E3]/10 to-transparent animate-pulse" />
+                )}
+                <Icon className={`w-8 h-8 md:w-10 md:h-10 mb-2 transition-transform duration-300 relative z-10 ${
+                  vehicleType === id ? 'scale-110' : 'group-hover:scale-105'
+                }`} />
+                <span className="font-bold text-sm md:text-base relative z-10">{label}</span>
+                {vehicleType === id && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-[#0071E3] rounded-full" />
+                )}
               </button>
             ))}
           </div>

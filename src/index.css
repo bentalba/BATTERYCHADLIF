@@ -2,17 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* VOLT IDENTITY - Apple-Inspired Design System */
+/* BATTERIES CHADLI - Premium Design System with Moroccan Warmth */
 
 @layer base {
   :root {
-    /* PRIMARY PALETTE - Apple Minimalism */
+    /* PRIMARY PALETTE - Tech Luxury with Moroccan Soul */
     --background: 0 0% 100%;
     --foreground: 220 9% 12%;
     
-    /* Apple's Signature Greys */
-    --soft-grey: 240 5% 97%;
-    --medium-grey: 240 5% 92%;
+    /* Warm Greys - Slightly warmer than pure grey */
+    --soft-grey: 30 5% 97%;
+    --medium-grey: 30 4% 92%;
     --deep-black: 220 9% 12%;
     
     /* Electric Blue - Primary CTA (Apple's #0071E3) */
@@ -21,21 +21,25 @@
     --electric-blue-light: 211 100% 95%;
     --electric-blue-dark: 211 100% 30%;
     
-    /* Energy Orange - Urgency & Discounts (#FF6B00) */
-    --energy-orange: 25 100% 50%;
-    --energy-orange-hover: 25 100% 45%;
-    --energy-orange-light: 25 100% 95%;
+    /* Moroccan Sun Orange - Warmth & Urgency (#FF6B00 with golden undertone) */
+    --energy-orange: 28 100% 52%;
+    --energy-orange-hover: 28 100% 45%;
+    --energy-orange-light: 35 100% 95%;
     
-    /* Success Green - Apple's #34C759 */
+    /* Success Green - Fresh & Trustworthy */
     --success-green: 142 71% 45%;
     --success-green-light: 142 60% 95%;
     
-    /* Danger Red - Apple's #FF3B30 */
+    /* Emergency Red - Attention */
     --danger-red: 4 100% 59%;
     
     /* Accent Cyan for highlights */
     --accent-cyan: 195 100% 50%;
     --accent-cyan-light: 195 100% 95%;
+    
+    /* Golden accent - Moroccan warmth */
+    --accent-gold: 45 100% 50%;
+    --accent-gold-light: 45 100% 95%;
     
     /* Purple accent */
     --accent-purple: 270 70% 60%;
