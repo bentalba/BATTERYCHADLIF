@@ -10,10 +10,10 @@ export interface ElectricButtonProps extends Omit<ButtonProps, 'variant'> {
 const ElectricButton = forwardRef<HTMLButtonElement, ElectricButtonProps>(
   ({ className, variant = "electric", ...props }, ref) => {
     const variants = {
-      electric: "bg-primary text-primary-foreground hover:bg-electric-blue-hover shadow-lg hover:shadow-xl transition-all duration-300",
-      orange: "bg-accent text-accent-foreground hover:bg-energy-orange-hover shadow-lg hover:shadow-xl transition-all duration-300",
-      "ghost-electric": "bg-transparent text-primary hover:bg-primary/10 transition-all duration-300",
-      "outline-electric": "border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300",
+      electric: "relative bg-gradient-primary text-primary-foreground shadow-colored-blue hover:shadow-glow-blue hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-700",
+      orange: "relative bg-gradient-accent text-accent-foreground shadow-colored-orange hover:shadow-glow-orange hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-700",
+      "ghost-electric": "bg-transparent text-primary hover:bg-electric-blue-light hover:scale-105 active:scale-95 transition-all duration-300",
+      "outline-electric": "border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground hover:shadow-colored-blue hover:scale-105 active:scale-95 transition-all duration-300",
     };
 
     return (

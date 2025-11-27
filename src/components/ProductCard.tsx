@@ -26,7 +26,7 @@ const ProductCard = ({
   const savings = originalPrice - discountedPrice;
 
   return (
-    <Card className="group overflow-hidden hover-lift bg-card">
+    <Card className="group overflow-hidden hover-lift hover-glow-blue bg-gradient-card shadow-lg border border-border relative">
       <div className="relative aspect-square overflow-hidden bg-soft-grey">
         <img
           src={image}
