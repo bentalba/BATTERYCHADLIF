@@ -2,97 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* VOLT IDENTITY - Apple-Inspired Design System */
 
 @layer base {
   :root {
-    /* Premium Volt Identity - Enhanced */
+    /* PRIMARY PALETTE - Apple Minimalism */
     --background: 0 0% 100%;
-    --foreground: 220 15% 8%;
+    --foreground: 220 9% 12%;
     
-    /* Refined greys with depth */
-    --soft-grey: 220 18% 97%;
-    --medium-grey: 220 10% 92%;
-    --deep-black: 220 20% 8%;
+    /* Apple's Signature Greys */
+    --soft-grey: 240 5% 97%;
+    --medium-grey: 240 5% 92%;
+    --deep-black: 220 9% 12%;
     
-    /* Electric Blue spectrum - Primary brand */
-    --electric-blue: 211 95% 48%;
-    --electric-blue-hover: 211 95% 42%;
-    --electric-blue-light: 211 90% 92%;
-    --electric-blue-dark: 211 100% 25%;
+    /* Electric Blue - Primary CTA (Apple's #0071E3) */
+    --electric-blue: 211 100% 45%;
+    --electric-blue-hover: 211 100% 38%;
+    --electric-blue-light: 211 100% 95%;
+    --electric-blue-dark: 211 100% 30%;
     
-    /* Energy Orange spectrum - Urgency & warmth */
-    --energy-orange: 25 98% 54%;
-    --energy-orange-hover: 25 98% 48%;
+    /* Energy Orange - Urgency & Discounts (#FF6B00) */
+    --energy-orange: 25 100% 50%;
+    --energy-orange-hover: 25 100% 45%;
     --energy-orange-light: 25 100% 95%;
     
-    /* Accent Cyan - Modern tech feel */
-    --accent-cyan: 190 95% 52%;
-    --accent-cyan-light: 190 85% 92%;
+    /* Success Green - Apple's #34C759 */
+    --success-green: 142 71% 45%;
+    --success-green-light: 142 60% 95%;
     
-    /* Success Green - Enhanced */
-    --success-green: 142 76% 42%;
-    --success-green-light: 142 60% 92%;
+    /* Danger Red - Apple's #FF3B30 */
+    --danger-red: 4 100% 59%;
     
-    /* Danger Red */
-    --danger-red: 4 90% 58%;
+    /* Accent Cyan for highlights */
+    --accent-cyan: 195 100% 50%;
+    --accent-cyan-light: 195 100% 95%;
     
-    /* Purple accent - Premium touch */
+    /* Purple accent */
     --accent-purple: 270 70% 60%;
     --accent-purple-light: 270 60% 95%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 8%;
+    --card-foreground: 220 9% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 8%;
+    --popover-foreground: 220 9% 12%;
 
-    --primary: 211 95% 48%;
+    --primary: 211 100% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 18% 97%;
-    --secondary-foreground: 220 15% 8%;
+    --secondary: 240 5% 97%;
+    --secondary-foreground: 220 9% 12%;
 
-    --muted: 220 18% 97%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 240 5% 97%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 25 98% 54%;
+    --accent: 25 100% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 4 90% 58%;
+    --destructive: 4 100% 59%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 90%;
-    --ring: 211 95% 48%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 211 100% 45%;
 
-    --radius: 0.875rem;
+    --radius: 0.75rem;
     
-    /* Premium glassmorphic effects */
+    /* Glassmorphism Effects - Apple Style */
     --glass-bg: 0 0% 100%;
-    --glass-border: 220 20% 85%;
+    --glass-border: 0 0% 90%;
     
-    /* Dramatic shadows with color tints */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10);
-    --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.14);
-    --shadow-colored-blue: 0 12px 40px rgba(0, 113, 227, 0.15);
-    --shadow-colored-orange: 0 12px 40px rgba(255, 107, 0, 0.15);
-    --shadow-glow-blue: 0 0 40px rgba(0, 113, 227, 0.2);
-    --shadow-glow-orange: 0 0 40px rgba(255, 107, 0, 0.2);
+    /* Apple-Style Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+    --shadow-2xl: 0 25px 80px rgba(0, 0, 0, 0.18);
+    --shadow-colored-blue: 0 10px 40px rgba(0, 113, 227, 0.25);
+    --shadow-colored-orange: 0 10px 40px rgba(255, 107, 0, 0.25);
+    --shadow-glow-blue: 0 0 60px rgba(0, 113, 227, 0.3);
+    --shadow-glow-orange: 0 0 60px rgba(255, 107, 0, 0.3);
     
-    /* Premium gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(211 95% 48%) 0%, hsl(190 95% 52%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(25 98% 54%) 0%, hsl(4 90% 58%) 100%);
-    --gradient-hero: linear-gradient(135deg, rgba(0, 113, 227, 0.08) 0%, rgba(0, 200, 255, 0.08) 50%, rgba(255, 107, 0, 0.08) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 18% 99%) 100%);
-    --gradient-mesh: radial-gradient(at 0% 0%, hsla(211, 95%, 48%, 0.1) 0px, transparent 50%),
-                     radial-gradient(at 100% 0%, hsla(190, 95%, 52%, 0.08) 0px, transparent 50%),
-                     radial-gradient(at 100% 100%, hsla(25, 98%, 54%, 0.1) 0px, transparent 50%),
-                     radial-gradient(at 0% 100%, hsla(270, 70%, 60%, 0.08) 0px, transparent 50%);
+    /* Apple's Gradient Style */
+    --gradient-primary: linear-gradient(135deg, hsl(211 100% 45%) 0%, hsl(211 100% 55%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(25 100% 50%) 0%, hsl(4 100% 59%) 100%);
+    --gradient-hero: linear-gradient(135deg, rgba(0,113,227,0.03) 0%, rgba(255,107,0,0.03) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(240 5% 99%) 100%);
+    --gradient-mesh: radial-gradient(at 0% 0%, hsla(211, 100%, 45%, 0.08) 0px, transparent 50%),
+                     radial-gradient(at 100% 0%, hsla(195, 100%, 50%, 0.05) 0px, transparent 50%),
+                     radial-gradient(at 100% 100%, hsla(25, 100%, 50%, 0.08) 0px, transparent 50%),
+                     radial-gradient(at 0% 100%, hsla(270, 70%, 60%, 0.05) 0px, transparent 50%);
   }
 
   .dark {
@@ -158,11 +157,20 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
-  /* Smooth scrolling */
+  /* Smooth scrolling with better behavior */
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+  }
+  
+  /* Selection styling */
+  ::selection {
+    background: hsl(38 95% 50% / 0.3);
+    color: hsl(220 15% 8%);
   }
 }
 
@@ -237,12 +245,27 @@ All colors MUST be HSL.
     background-origin: border-box;
     background-clip: padding-box, border-box;
   }
+  
+  /* Luxury shimmer effect */
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  /* Smooth text gradient */
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(38 95% 50%), hsl(25 98% 54%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -253,7 +276,7 @@ All colors MUST be HSL.
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
@@ -264,7 +287,7 @@ All colors MUST be HSL.
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-30px);
   }
   to {
     opacity: 1;
@@ -281,14 +304,237 @@ All colors MUST be HSL.
   }
 }
 
-@keyframes pulseMarker {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.7);
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 25px 50px -12px rgba(0, 113, 227, 0.3);
   }
-  70% {
-    box-shadow: 0 0 0 10px rgba(0, 113, 227, 0);
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 30px 60px -10px rgba(0, 113, 227, 0.4);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0);
+    background-position: 200% 0;
   }
+}
+
+@keyframes pulseMarker {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(245, 158, 11, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.5);
+  }
+}
+
+/* ===== SIMPLE UTILITY ANIMATIONS ===== */
+
+/* Only keep essential, lightweight animations */
+@keyframes simplePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes simpleFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-simple-pulse {
+  animation: simplePulse 2s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: simpleFadeIn 0.3s ease-out;
+}
+
+/* ===== VOLTAGE ANIMATIONS ===== */
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(20px, 20px);
+  }
+}
+
+@keyframes electricPulse {
+  0%, 100% {
+    opacity: 0.5;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+}
+
+@keyframes voltFlicker {
+  0%, 90%, 100% { opacity: 1; }
+  92%, 94%, 96% { opacity: 0.8; }
+  91%, 93%, 95%, 97% { opacity: 1; }
+}
+
+.animate-volt-flicker {
+  animation: voltFlicker 3s ease-in-out infinite;
+}
+
+/* ===== ANIMATED WIRES ===== */
+@keyframes wireFlow {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wireFlowReverse {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 1000;
+  }
+}
+
+@keyframes wirePulse {
+  0%, 100% {
+    opacity: 0.6;
+    stroke-width: 4;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 5;
+  }
+}
+
+@keyframes floatParticle {
+  0%, 100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) scale(1.2);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px) scale(0.8);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-30px) translateX(15px) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes sparkTravel {
+  0% {
+    opacity: 0;
+    filter: blur(0px);
+  }
+  10% {
+    opacity: 1;
+    filter: blur(0px) drop-shadow(0 0 6px #fff);
+  }
+  90% {
+    opacity: 1;
+    filter: blur(0px) drop-shadow(0 0 6px #fff);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+.animate-wire-flow {
+  stroke-dasharray: 20 10;
+  animation: wireFlow 4s linear infinite;
+}
+
+.animate-wire-flow-reverse {
+  stroke-dasharray: 20 10;
+  animation: wireFlowReverse 4s linear infinite;
+}
+
+.animate-wire-pulse {
+  animation: wirePulse 2s ease-in-out infinite;
+}
+
+.animate-wire-pulse-delay {
+  animation: wirePulse 2s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-float-particle {
+  animation: floatParticle 4s ease-in-out infinite;
+}
+
+.animate-spark-red {
+  animation: sparkTravel 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px #ef4444);
+}
+
+.animate-spark-green {
+  animation: sparkTravel 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px #22c55e);
+}
+
+/* Electric spark flash */
+@keyframes spark {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+.animate-spark {
+  animation: spark 0.8s ease-in-out infinite;
 }
