@@ -11,10 +11,10 @@ import { spring } from "@/lib/motion";
 const WhatsAppButton = () => {
   return (
     <motion.a
-      href="https://wa.me/212537XXXXXX?text=Bonjour, je cherche une batterie pour mon véhicule"
+      href="https://wa.me/212661238104?text=Bonjour, je cherche une batterie pour mon véhicule"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-24 md:bottom-8 right-4 md:right-6 z-40 group"
+      className="fixed bottom-8 right-6 z-40 group hidden md:flex"
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 1, ...spring.bouncy }}

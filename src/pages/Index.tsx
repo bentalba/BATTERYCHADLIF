@@ -1,21 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import BatteryFinder from "@/components/BatteryFinder";
+import BatteryFinderCompact from "@/components/BatteryFinderCompact";
 import ValueCard from "@/components/ValueCard";
-import ProductCardPremium from "@/components/ProductCardPremium";
+import ProductCard from "@/components/ProductCard";
 import EmergencyBar from "@/components/EmergencyBar";
 import MobileStickyBar from "@/components/MobileStickyBar";
-import HeroBattery3D from "@/components/HeroBattery3D";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import LiveActivityCounter from "@/components/LiveActivityCounter";
-import LogoLoop from "@/components/LogoLoop";
 import FAQSection from "@/components/FAQSection";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { duration, ease, spring, scrollReveal } from "@/lib/motion";
-import { Wrench, Recycle, Truck, Phone, MessageCircle, ChevronDown, ChevronRight, Zap, MapPin, X, Plus, Minus, Star, Clock, Shield, Award, Battery, ArrowRight } from "lucide-react";
-import { products, getBestSellers, getProductsByCategory, getBatteryImage, type Product } from "@/data/products";
+import { Wrench, Recycle, Truck, Phone, ChevronDown, ChevronRight, Zap, MapPin, X, Plus, Minus, Star, Shield, Battery, ArrowRight, Car, Anchor, MessageCircle, Clock } from "lucide-react";
+import { getBestSellers, type Product } from "@/data/products";
 
 // Brand logos for the animated loop
 const brandLogos = [
@@ -37,122 +34,62 @@ interface CartItem {
 const Index = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [scrollY, setScrollY] = useState(0);
-  const [initialCharge, setInitialCharge] = useState(0);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const [categoryIndex, setCategoryIndex] = useState(0);
   const productsRef = useRef<HTMLDivElement>(null);
-  const scrollRAF = useRef<number | null>(null);
   const { toast } = useToast();
 
-  // Live activity notifications - Social proof
+  // Hero categories for flipping animation
+  const heroCategories = useMemo(() => [
+    { text: "Auto", color: "text-[#0071E3]" },
+    { text: "Poids Lourds", color: "text-[#FF6B00]" },
+    { text: "Marine", color: "text-cyan-500" },
+  ], []);
+
+  // Flip through categories
   useEffect(() => {
-    const cities = ["Centre Ville", "Bir Rami", "Maamora", "Saknia", "Mehdia", "Ouled Oujih"];
-    const batteries = ["VARTA E13", "EXIDE EK700 AGM", "TUDOR TC700", "BOSCH S5", "FULMEN FC700"];
-    const actions = [
-      { text: "vient de commander", icon: "🛒" },
-      { text: "a reçu sa batterie", icon: "✅" },
-      { text: "a demandé un dépannage", icon: "🚗" },
-      { text: "vient d'être installé", icon: "🔧" },
-    ];
-    
-    // First toast after 8 seconds
-    const initialTimeout = setTimeout(() => {
-      showRandomToast();
-    }, 8000);
-
-    // Then every 20-35 seconds randomly
     const interval = setInterval(() => {
-      showRandomToast();
-    }, 20000 + Math.random() * 15000);
+      setCategoryIndex((prev) => (prev + 1) % heroCategories.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [heroCategories.length]);
 
-    function showRandomToast() {
+  // Best sellers - memoized
+  const bestSellers = useMemo(() => getBestSellers(), []);
+
+  // Live activity notifications - less frequent for performance
+  useEffect(() => {
+    const cities = ["Casablanca", "Rabat", "Marrakech", "Fès", "Tanger", "Agadir", "Kenitra", "Meknès"];
+    const batteries = ["VARTA E13", "EXIDE EK700 AGM", "TUDOR TC700", "BOSCH S5"];
+    
+    // Only show toasts every 30-45 seconds
+    const interval = setInterval(() => {
       const randomCity = cities[Math.floor(Math.random() * cities.length)];
       const randomBattery = batteries[Math.floor(Math.random() * batteries.length)];
-      const randomAction = actions[Math.floor(Math.random() * actions.length)];
       const minutesAgo = Math.floor(Math.random() * 10) + 1;
       
       toast({
         description: (
           <div className="flex items-center gap-3">
-            <span className="text-lg">{randomAction.icon}</span>
+            <span className="text-lg">🛒</span>
             <div>
               <p className="font-medium text-gray-900">
-                Client à <span className="text-[#0071E3]">{randomCity}</span>
+                Commande à <span className="text-[#0071E3]">{randomCity}</span>
               </p>
               <p className="text-sm text-gray-500">
-                {randomAction.text} une {randomBattery} · il y a {minutesAgo} min
+                {randomBattery} · il y a {minutesAgo} min
               </p>
             </div>
           </div>
         ),
-        duration: 5000,
+        duration: 4000,
         className: "bg-white/95 backdrop-blur-xl border border-gray-100 shadow-xl"
       });
-    }
+    }, 30000 + Math.random() * 15000);
 
     return () => {
-      clearTimeout(initialTimeout);
       clearInterval(interval);
     };
   }, [toast]);
-
-  // Initial charging animation on page load
-  useEffect(() => {
-    let frame = 0;
-    const animate = () => {
-      frame++;
-      if (frame % 3 === 0) { // Throttle updates
-        setInitialCharge(prev => {
-          if (prev >= 25) return 25;
-          return prev + 1;
-        });
-      }
-      if (frame < 75) {
-        requestAnimationFrame(animate);
-      }
-    };
-    requestAnimationFrame(animate);
-  }, []);
-
-  // Optimized scroll handler with RAF throttling
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollRAF.current) return;
-      scrollRAF.current = requestAnimationFrame(() => {
-        setScrollY(window.scrollY);
-        scrollRAF.current = null;
-      });
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (scrollRAF.current) cancelAnimationFrame(scrollRAF.current);
-    };
-  }, []);
-
-  // Calculate battery charge based on scroll position
-  const calculateBatteryCharge = () => {
-    const productsSection = productsRef.current;
-    if (!productsSection) return initialCharge;
-    
-    const productsSectionTop = productsSection.offsetTop;
-    const maxScroll = productsSectionTop - window.innerHeight * 0.3;
-    
-    if (scrollY <= 0) return initialCharge;
-    
-    const scrollProgress = Math.min(scrollY / maxScroll, 1);
-    return Math.max(initialCharge, 25 + scrollProgress * 75);
-  };
-
-  // Battery stays visible much longer - only starts fading after 80% of viewport
-  const isBatteryInBackground = scrollY > window.innerHeight * 0.3;
-  const batteryCharge = calculateBatteryCharge();
-  
-  // Main battery fades out, background battery fades in
-  const mainBatteryOpacity = Math.max(0, 1 - scrollY / (window.innerHeight * 0.4));
-  const backgroundBatteryOpacity = isBatteryInBackground 
-    ? Math.min(0.2, (scrollY - window.innerHeight * 0.3) / (window.innerHeight * 0.5))
-    : 0;
 
   const addToCart = (product: Omit<CartItem, "quantity">) => {
     setCartItems(prev => {
@@ -193,67 +130,25 @@ const Index = () => {
       />
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          HERO SECTION - "WOW" Premium Design 
-          Inspired by Apple's product pages with 3D floating battery
+          HERO SECTION - Clean & Fast
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-screen overflow-hidden pt-20">
-        {/* Animated gradient mesh background */}
+      <section className="relative min-h-screen overflow-hidden pt-20">
+        {/* Simple gradient background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,113,227,0.15),transparent)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_100%_100%,rgba(34,197,94,0.1),transparent)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_0%_50%,rgba(255,107,0,0.08),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,113,227,0.12),transparent)]" />
         </div>
-        
-        {/* Animated grid lines */}
-        <div className="absolute inset-0 overflow-hidden opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `
-              linear-gradient(90deg, #000 1px, transparent 1px),
-              linear-gradient(180deg, #000 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-          }} />
-        </div>
-
-        {/* Floating orbs */}
-        <motion.div 
-          className="absolute top-20 left-[10%] w-72 h-72 rounded-full blur-3xl"
-          style={{ background: 'radial-gradient(circle, rgba(0,113,227,0.15) 0%, transparent 70%)' }}
-          animate={{ 
-            x: [0, 30, 0], 
-            y: [0, -20, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-40 right-[15%] w-96 h-96 rounded-full blur-3xl"
-          style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)' }}
-          animate={{ 
-            x: [0, -40, 0], 
-            y: [0, 30, 0],
-            scale: [1, 1.15, 1]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center min-h-[calc(100vh-5rem)]">
             
             {/* LEFT SIDE - Content */}
             <motion.div 
               className="space-y-8 text-center lg:text-left order-2 lg:order-1"
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
               {/* Trust badge */}
-              <motion.div 
-                className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border border-white/50"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
+              <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border border-white/50">
                 <div className="flex -space-x-2">
                   {['K', 'M', 'S', 'A'].map((letter, i) => (
                     <div key={i} className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0071E3] to-[#00a8ff] flex items-center justify-center text-white text-xs font-bold ring-2 ring-white">
@@ -269,7 +164,7 @@ const Index = () => {
                 <span className="text-sm font-semibold text-gray-700">
                   <span className="text-[#0071E3]">10 000+</span> clients
                 </span>
-              </motion.div>
+              </div>
 
               {/* Main headline */}
               <div className="space-y-4">
@@ -279,11 +174,25 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                 >
-                  <span className="text-gray-900">L'énergie qui</span>
+                  <span className="text-gray-900">Batteries </span>
+                  <span className="relative inline-block h-[1.1em] overflow-hidden align-bottom">
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={categoryIndex}
+                        className={`inline-block ${heroCategories[categoryIndex].color}`}
+                        initial={{ y: 40, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -40, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: "easeInOut" }}
+                      >
+                        {heroCategories[categoryIndex].text}
+                      </motion.span>
+                    </AnimatePresence>
+                  </span>
                   <br />
                   <span className="relative">
                     <span className="bg-gradient-to-r from-[#0071E3] via-[#00a8ff] to-[#0071E3] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
-                      vous fait avancer
+                      au Maroc
                     </span>
                     {/* Underline accent */}
                     <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 300 12" fill="none">
@@ -312,8 +221,8 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
                 >
-                  Batteries premium à <span className="text-gray-900 font-semibold">Kenitra</span>. 
-                  Installation gratuite, livraison en 2h, garantie 2 ans.
+                  <span className="text-gray-900 font-semibold">N°1 des batteries</span> pour voitures, camions et bateaux. 
+                  Livraison partout au Maroc.
                 </motion.p>
               </div>
 
@@ -380,39 +289,154 @@ const Index = () => {
                 </button>
               </motion.div>
 
-              {/* Live activity counter */}
+              {/* Live activity counter - Simple version */}
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
                 className="flex justify-center lg:justify-start"
               >
-                <LiveActivityCounter />
+                <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-full border border-green-100">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  <span className="text-sm text-green-700 font-medium">12 commandes aujourd'hui</span>
+                </div>
               </motion.div>
             </motion.div>
 
-            {/* RIGHT SIDE - 3D Battery */}
+            {/* RIGHT SIDE - Battery Image */}
             <motion.div 
               className="relative order-1 lg:order-2 flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.8, rotateY: -30 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             >
               {/* Glow behind battery */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-[120%] h-[120%] bg-gradient-to-br from-[#0071E3]/20 via-[#00a8ff]/10 to-[#22c55e]/20 rounded-full blur-3xl animate-pulse-subtle" />
+                <div className="w-[80%] h-[80%] bg-gradient-to-br from-[#0071E3]/20 via-[#00a8ff]/10 to-[#22c55e]/20 rounded-full blur-3xl" />
               </div>
               
-              {/* 3D Battery */}
-              <div className="relative w-full max-w-lg">
-                <HeroBattery3D scrollProgress={scrollY / 500} />
+              {/* Car Battery SVG Illustration with Jumper Cables */}
+              <div className="relative w-full max-w-sm">
+                <svg viewBox="0 0 340 280" className="w-full h-auto drop-shadow-2xl">
+                  
+                  {/* JUMPER CABLES IN BACKGROUND */}
+                  {/* Red cable (positive) - curved path going to the right */}
+                  <path 
+                    d="M280 85 Q320 70 330 120 Q340 180 300 220 Q260 260 200 250" 
+                    stroke="#dc2626" 
+                    strokeWidth="12" 
+                    fill="none" 
+                    strokeLinecap="round"
+                    opacity="0.9"
+                  />
+                  <path 
+                    d="M280 85 Q320 70 330 120 Q340 180 300 220 Q260 260 200 250" 
+                    stroke="#ef4444" 
+                    strokeWidth="8" 
+                    fill="none" 
+                    strokeLinecap="round"
+                  />
+                  {/* Red clamp */}
+                  <ellipse cx="280" cy="85" rx="18" ry="12" fill="#b91c1c" />
+                  <rect x="268" y="78" width="24" height="14" rx="2" fill="#dc2626" />
+                  <rect x="272" y="72" width="16" height="8" rx="2" fill="#7f1d1d" />
+                  
+                  {/* Black cable (negative) - curved path going to the left */}
+                  <path 
+                    d="M60 85 Q20 70 10 130 Q0 190 40 230 Q80 270 140 255" 
+                    stroke="#1f2937" 
+                    strokeWidth="12" 
+                    fill="none" 
+                    strokeLinecap="round"
+                    opacity="0.9"
+                  />
+                  <path 
+                    d="M60 85 Q20 70 10 130 Q0 190 40 230 Q80 270 140 255" 
+                    stroke="#374151" 
+                    strokeWidth="8" 
+                    fill="none" 
+                    strokeLinecap="round"
+                  />
+                  {/* Black clamp */}
+                  <ellipse cx="60" cy="85" rx="18" ry="12" fill="#1f2937" />
+                  <rect x="48" y="78" width="24" height="14" rx="2" fill="#374151" />
+                  <rect x="52" y="72" width="16" height="8" rx="2" fill="#111827" />
+                  
+                  {/* MAIN BATTERY - shifted down and centered */}
+                  {/* Main battery body - rectangular car battery shape */}
+                  <rect x="40" y="90" width="260" height="150" rx="8" fill="#1a1a1a" />
+                  <rect x="45" y="95" width="250" height="140" rx="6" fill="#2d2d2d" />
+                  
+                  {/* Battery top ridge/lip */}
+                  <rect x="40" y="85" width="260" height="12" rx="3" fill="#1a1a1a" />
+                  
+                  {/* Terminal posts - left (negative) */}
+                  <rect x="65" y="65" width="30" height="25" rx="4" fill="#4a4a4a" />
+                  <rect x="72" y="55" width="16" height="15" rx="3" fill="#666" />
+                  <text x="80" y="82" textAnchor="middle" fill="#0071E3" fontSize="14" fontWeight="bold">−</text>
+                  
+                  {/* Terminal posts - right (positive) */}
+                  <rect x="245" y="65" width="30" height="25" rx="4" fill="#4a4a4a" />
+                  <rect x="252" y="55" width="16" height="15" rx="3" fill="#c9a227" />
+                  <text x="260" y="82" textAnchor="middle" fill="#FF6B00" fontSize="14" fontWeight="bold">+</text>
+                  
+                  {/* Handle/grip on top */}
+                  <rect x="135" y="70" width="70" height="8" rx="4" fill="#3a3a3a" />
+                  
+                  {/* Battery cells indicators (6 cells for 12V) */}
+                  <g>
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <rect key={i} x={55 + i * 40} y="105" width="35" height="70" rx="3" fill="#1a1a1a" />
+                    ))}
+                  </g>
+                  
+                  {/* Animated charge level in cells */}
+                  <g>
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <motion.rect 
+                        key={i}
+                        x={58 + i * 40} 
+                        width="29" 
+                        rx="2" 
+                        fill="url(#carBatteryGradient)"
+                        initial={{ height: 0, y: 172 }}
+                        animate={{ height: 60, y: 112 }}
+                        transition={{ duration: 1, delay: 0.3 + i * 0.1, ease: "easeOut" }}
+                      />
+                    ))}
+                  </g>
+                  
+                  {/* Brand label area */}
+                  <rect x="80" y="185" width="180" height="45" rx="4" fill="#222" />
+                  
+                  {/* Battery specs text */}
+                  <text x="170" y="205" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">VARTA</text>
+                  <text x="170" y="222" textAnchor="middle" fill="#0071E3" fontSize="12" fontWeight="bold">12V • 70Ah • 640A</text>
+                  
+                  {/* Side vents */}
+                  <g fill="#1a1a1a">
+                    <rect x="45" y="190" width="25" height="3" rx="1" />
+                    <rect x="45" y="196" width="25" height="3" rx="1" />
+                    <rect x="45" y="202" width="25" height="3" rx="1" />
+                    <rect x="270" y="190" width="25" height="3" rx="1" />
+                    <rect x="270" y="196" width="25" height="3" rx="1" />
+                    <rect x="270" y="202" width="25" height="3" rx="1" />
+                  </g>
+                  
+                  <defs>
+                    <linearGradient id="carBatteryGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#22c55e" />
+                      <stop offset="100%" stopColor="#4ade80" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
               
               {/* Floating specs cards */}
               <motion.div 
                 className="absolute -left-4 top-1/4 p-3 bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-white/50"
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <div className="text-xs text-gray-500">Voltage</div>
                 <div className="text-lg font-bold text-gray-900">12V</div>
@@ -420,8 +444,8 @@ const Index = () => {
               
               <motion.div 
                 className="absolute -right-4 top-1/3 p-3 bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-white/50"
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                animate={{ y: [0, 8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
               >
                 <div className="text-xs text-gray-500">Capacité</div>
                 <div className="text-lg font-bold text-[#0071E3]">70Ah</div>
@@ -429,8 +453,8 @@ const Index = () => {
               
               <motion.div 
                 className="absolute left-1/4 -bottom-4 p-3 bg-white/90 backdrop-blur-xl rounded-xl shadow-lg border border-white/50"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               >
                 <div className="text-xs text-gray-500">Courant</div>
                 <div className="text-lg font-bold text-green-500">640A</div>
@@ -445,136 +469,230 @@ const Index = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
-          onClick={() => document.getElementById('value-props')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => document.getElementById('quick-categories')?.scrollIntoView({ behavior: 'smooth' })}
         >
           <ChevronDown className="w-6 h-6 text-gray-400 animate-bounce" />
         </motion.div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════════════════
-          BATTERY FINDER SECTION - Glass morphism floating widget
+          QUICK CATEGORY NAVIGATION - First thing visitors see
       ═══════════════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50 battery-finder">
+      <section id="quick-categories" className="py-16 bg-white">
         <div className="container mx-auto px-6">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-10"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Trouvez votre batterie en <span className="text-[#0071E3]">30 secondes</span>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              Quelle batterie cherchez-vous ?
             </h2>
-            <p className="text-lg text-gray-500">
-              Sélectionnez votre véhicule et découvrez la batterie parfaite
+            <p className="text-gray-500">
+              Cliquez sur votre catégorie pour voir tous les produits
             </p>
           </motion.div>
-          
-          <BatteryFinder />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Car Batteries */}
+            <Link to="/batteries-voiture">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative p-8 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-3xl border-2 border-blue-100 hover:border-[#0071E3] transition-all duration-300 cursor-pointer overflow-hidden"
+              >
+                <div className="absolute top-4 right-4 px-3 py-1 bg-[#0071E3] text-white text-xs font-bold rounded-full">
+                  192 produits
+                </div>
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0071E3] to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/25 group-hover:scale-110 transition-transform duration-300">
+                    <Car className="w-10 h-10 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">Batteries Voiture</h3>
+                    <p className="text-sm text-gray-500">Toutes marques : VARTA, EXIDE, TUDOR, BOSCH...</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#0071E3] font-semibold group-hover:gap-3 transition-all">
+                    <span>Voir le catalogue</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* Truck Batteries */}
+            <Link to="/batteries-poids-lourd">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative p-8 bg-gradient-to-br from-orange-50 to-amber-100/50 rounded-3xl border-2 border-orange-100 hover:border-[#FF6B00] transition-all duration-300 cursor-pointer overflow-hidden"
+              >
+                <div className="absolute top-4 right-4 px-3 py-1 bg-[#FF6B00] text-white text-xs font-bold rounded-full">
+                  PRO
+                </div>
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#FF6B00] to-orange-600 flex items-center justify-center shadow-xl shadow-orange-500/25 group-hover:scale-110 transition-transform duration-300">
+                    <Truck className="w-10 h-10 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">Batteries Poids Lourds</h3>
+                    <p className="text-sm text-gray-500">Camions, bus, véhicules agricoles</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-[#FF6B00] font-semibold group-hover:gap-3 transition-all">
+                    <span>Voir le catalogue</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* Marine Batteries */}
+            <Link to="/batteries-marine">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative p-8 bg-gradient-to-br from-cyan-50 to-teal-100/50 rounded-3xl border-2 border-cyan-100 hover:border-cyan-500 transition-all duration-300 cursor-pointer overflow-hidden"
+              >
+                <div className="absolute top-4 right-4 px-3 py-1 bg-cyan-500 text-white text-xs font-bold rounded-full">
+                  MARINE
+                </div>
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center shadow-xl shadow-cyan-500/25 group-hover:scale-110 transition-transform duration-300">
+                    <Anchor className="w-10 h-10 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">Batteries Marine</h3>
+                    <p className="text-sm text-gray-500">Bateaux, yachts, applications nautiques</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-cyan-600 font-semibold group-hover:gap-3 transition-all">
+                    <span>Voir le catalogue</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          </div>
+
+          {/* Quick search hint */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="text-center mt-10"
+          >
+            <p className="text-gray-500 text-sm">
+              Vous ne savez pas quelle batterie choisir ? 
+              <button 
+                onClick={() => document.querySelector('.battery-finder')?.scrollIntoView({ behavior: 'smooth' })}
+                className="text-[#0071E3] font-semibold ml-1 hover:underline"
+              >
+                Utilisez notre outil de recherche →
+              </button>
+            </p>
+          </motion.div>
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS */}
-      <section ref={productsRef} id="products" className="py-24 relative z-10 bg-gradient-to-b from-white to-gray-50">
+      {/* ═══════════════════════════════════════════════════════════════════════════
+          BATTERY FINDER SECTION - Compact version
+      ═══════════════════════════════════════════════════════════════════════════ */}
+      <section className="py-12 bg-gray-50 battery-finder">
         <div className="container mx-auto px-6">
-          {/* 100% Charge indicator when reaching products */}
-          {batteryCharge >= 95 && (
-            <div className="text-center mb-8">
-              <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 font-semibold shadow-sm">
-                <Zap className="w-5 h-5" />
-                Votre batterie chargée vous attend!
-              </span>
-            </div>
-          )}
-          
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-gray-900 text-white text-sm font-medium mb-4">
-              Best-sellers
+          <div className="text-center mb-6">
+            <p className="text-gray-500">
+              Vous ne connaissez pas la référence ? <span className="text-[#0071E3] font-medium">Utilisez notre outil</span>
+            </p>
+          </div>
+          <BatteryFinderCompact />
+        </div>
+      </section>
+
+      {/* BEST SELLERS - Only 8 products for fast loading */}
+      <section ref={productsRef} id="products" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0071E3]/10 rounded-full text-[#0071E3] text-sm font-semibold mb-4">
+              <Star className="w-4 h-4" /> Best-sellers
             </span>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
-              Batteries les plus vendues
+              Nos Meilleures Ventes
             </h2>
             <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-              Découvrez notre sélection des meilleures batteries, choisies par nos clients
+              Les batteries les plus populaires choisies par nos clients
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {getBestSellers().slice(0, 4).map((product) => (
-              <ProductCardPremium
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {getBestSellers().slice(0, 8).map((product, index) => (
+              <motion.div
                 key={product.id}
-                name={product.name}
-                specs={product.specs}
-                originalPrice={product.originalPrice}
-                discountedPrice={product.discountedPrice}
-                inStock={product.inStock}
-                badge={product.badge}
-                rating={product.rating}
-                discount={product.discount}
-                brand={product.brand}
-                image={product.image || getBatteryImage(product.brand, product.category)}
-                onAddToCart={addToCart}
-              />
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <ProductCard
+                  name={product.name}
+                  specs={product.specs}
+                  originalPrice={product.originalPrice}
+                  discountedPrice={product.discountedPrice}
+                  image={product.image}
+                  inStock={product.inStock}
+                  badge={product.badge || undefined}
+                  rating={product.rating}
+                  discount={product.discount}
+                  brand={product.brand}
+                  onAddToCart={addToCart}
+                />
+              </motion.div>
             ))}
           </div>
 
-          {/* More Products Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-            {getProductsByCategory('voiture').slice(5, 9).map((product) => (
-              <ProductCardPremium
-                key={product.id}
-                name={product.name}
-                specs={product.specs}
-                originalPrice={product.originalPrice}
-                discountedPrice={product.discountedPrice}
-                inStock={product.inStock}
-                badge={product.badge}
-                rating={product.rating}
-                discount={product.discount}
-                brand={product.brand}
-                image={product.image || getBatteryImage(product.brand, product.category)}
-                onAddToCart={addToCart}
-              />
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button
-              variant="outline"
-              size="lg"
-              className="text-[#0071E3] border-[#0071E3] hover:bg-[#0071E3] hover:text-white transition-all duration-300"
-            >
-              Voir toutes les batteries →
-            </Button>
+          <div className="text-center mt-10">
+            <Link to="/batteries-voiture">
+              <Button size="lg" className="bg-[#0071E3] hover:bg-[#0071E3]/90">
+                Voir toutes les batteries voiture
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* TRUSTED BRANDS SECTION - LogoLoop Animation */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-white border-y border-gray-100 overflow-hidden">
+      {/* TRUSTED BRANDS SECTION - Simple version */}
+      <section className="py-12 bg-gradient-to-b from-gray-50 to-white border-y border-gray-100">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             <span className="text-sm font-semibold text-[#0071E3] uppercase tracking-widest">Nos Partenaires</span>
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mt-2">
-              VARTA • EXIDE • BOSCH • TUDOR • ELECTRA • ALMA
-            </h3>
             <p className="text-gray-500 mt-2">Distributeur officiel des marques leaders au Maroc</p>
           </div>
           
-          <div className="h-24 relative">
-            <LogoLoop
-              logos={brandLogos}
-              speed={50}
-              direction="left"
-              logoHeight={64}
-              gap={60}
-              hoverSpeed={0}
-              scaleOnHover
-              fadeOut
-              fadeOutColor="rgb(249, 250, 251)"
-              ariaLabel="Nos marques partenaires"
-            />
+          {/* Simple logo grid */}
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+            {brandLogos.map((logo, index) => (
+              <div key={index} className="grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100">
+                <img 
+                  src={logo.src} 
+                  alt={logo.alt}
+                  className="h-12 md:h-16 w-auto object-contain"
+                  loading="lazy"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -592,7 +710,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Link to="/batteries-poids-lourd" className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10" />
               <img 
                 src="/products/poids-lourd.jpg" 
@@ -609,9 +727,9 @@ const Index = () => {
                 <p className="text-white/80 mb-4">Solutions professionnelles haute puissance</p>
                 <span className="inline-flex items-center text-sm font-medium group-hover:translate-x-2 transition-transform">Explorer →</span>
               </div>
-            </div>
+            </Link>
 
-            <div className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <Link to="/batteries-marine" className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="absolute inset-0 bg-gradient-to-t from-[#0071E3]/90 via-[#0071E3]/50 to-transparent z-10" />
               <img 
                 src="https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&h=400&fit=crop&q=80" 
@@ -628,7 +746,7 @@ const Index = () => {
                 <p className="text-white/80 mb-4">Pour bateaux et yachts</p>
                 <span className="inline-flex items-center text-sm font-medium group-hover:translate-x-2 transition-transform">Explorer →</span>
               </div>
-            </div>
+            </Link>
 
             <div className="group relative h-80 rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="absolute inset-0 bg-gradient-to-t from-[#22c55e]/90 via-[#22c55e]/40 to-transparent z-10" />
@@ -645,7 +763,7 @@ const Index = () => {
               <div className="absolute bottom-0 left-0 right-0 p-6 z-20 text-white">
                 <h3 className="text-2xl font-bold mb-2">Batteries Solaire</h3>
                 <p className="text-white/80 mb-4">Stockage d'énergie renouvelable</p>
-                <span className="inline-flex items-center text-sm font-medium group-hover:translate-x-2 transition-transform">Explorer →</span>
+                <span className="inline-flex items-center text-sm font-medium group-hover:translate-x-2 transition-transform">Bientôt disponible →</span>
               </div>
             </div>
           </div>
@@ -908,12 +1026,12 @@ const Index = () => {
         </div>
       </footer>
       
-      {/* FLOATING WHATSAPP BUTTON */}
+      {/* FLOATING WHATSAPP BUTTON - Desktop only (mobile uses MobileStickyBar) */}
       <a
-        href="https://wa.me/212537XXXXXX?text=Bonjour,%20je%20cherche%20une%20batterie%20pour%20ma%20voiture"
+        href="https://wa.me/212661238104?text=Bonjour,%20je%20cherche%20une%20batterie%20pour%20ma%20voiture"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-40 group"
+        className="fixed bottom-6 right-6 z-40 group hidden md:block"
       >
         <div className="relative">
           {/* Pulse Animation */}

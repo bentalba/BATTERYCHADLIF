@@ -1,6 +1,7 @@
-import { ShoppingCart, Phone, Zap, Menu, X } from "lucide-react";
+import { ShoppingCart, Phone, Zap, Menu, X, ChevronDown, Car, Truck, Anchor } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
 import { duration, ease, spring } from "@/lib/motion";
 
 interface NavigationProps {
@@ -32,11 +33,20 @@ const Navigation = ({ cartItemsCount = 0, onCartClick }: NavigationProps) => {
     }
   }, [cartItemsCount]);
 
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const [batteriesDropdownOpen, setBatteriesDropdownOpen] = useState(false);
+
+  const batteryCategories = [
+    { href: '/batteries-voiture', label: 'Batteries Voiture', icon: Car, color: 'text-[#0071E3]', count: '192' },
+    { href: '/batteries-poids-lourd', label: 'Batteries Poids Lourds', icon: Truck, color: 'text-[#FF6B00]', count: '22' },
+    { href: '/batteries-marine', label: 'Batteries Marine', icon: Anchor, color: 'text-cyan-500', count: '20' },
+  ];
+
   const navLinks = [
-    { href: '#products', label: 'Batteries' },
-    { href: '#value-props', label: 'Services' },
-    { href: '#faq', label: 'FAQ' },
-    { href: '#', label: 'Contact' },
+    { href: isHomePage ? '#value-props' : '/#value-props', label: 'Services' },
+    { href: isHomePage ? '#faq' : '/#faq', label: 'FAQ' },
+    { href: 'tel:+212661377866', label: 'Contact' },
   ];
 
   return (
@@ -72,21 +82,67 @@ const Navigation = ({ cartItemsCount = 0, onCartClick }: NavigationProps) => {
       <div className="container mx-auto px-6 relative">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <motion.a 
-            href="#"
+          <Link 
+            to="/"
             className="flex items-center gap-2 cursor-pointer"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
           >
-            <img 
+            <motion.img 
               src="/logo.png" 
               alt="Chadli Batteries" 
               className="h-14 w-auto object-contain"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             />
-          </motion.a>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-8">
+            {/* Batteries Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setBatteriesDropdownOpen(true)}
+              onMouseLeave={() => setBatteriesDropdownOpen(false)}
+            >
+              <motion.button
+                className="flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 py-2"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                Batteries
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${batteriesDropdownOpen ? 'rotate-180' : ''}`} />
+              </motion.button>
+
+              <AnimatePresence>
+                {batteriesDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
+                  >
+                    <div className="p-2">
+                      {batteryCategories.map((cat) => (
+                        <Link
+                          key={cat.href}
+                          to={cat.href}
+                          className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                        >
+                          <div className={`w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center group-hover:scale-110 transition-transform ${cat.color}`}>
+                            <cat.icon className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-gray-900">{cat.label}</div>
+                            <div className="text-xs text-gray-400">{cat.count} produits</div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             {navLinks.map((link, index) => (
               <motion.a 
                 key={link.href + index}
@@ -119,7 +175,7 @@ const Navigation = ({ cartItemsCount = 0, onCartClick }: NavigationProps) => {
           <div className="flex items-center gap-3">
             {/* Phone CTA */}
             <motion.a 
-              href="tel:+212537XXXXXX" 
+              href="tel:+212661377866" 
               className="hidden sm:flex items-center gap-2 text-sm px-4 py-2 rounded-full bg-[#0071E3]/5 border border-[#0071E3]/10 transition-colors duration-200 group"
               whileHover={{ 
                 backgroundColor: "rgba(0,113,227,0.1)",
@@ -133,7 +189,7 @@ const Navigation = ({ cartItemsCount = 0, onCartClick }: NavigationProps) => {
               >
                 <Phone className="w-4 h-4 text-[#0071E3]" />
               </motion.div>
-              <span className="font-semibold text-[#0071E3]">+212 537 XX XX XX</span>
+              <span className="font-semibold text-[#0071E3]">0661-377866</span>
             </motion.a>
 
             {/* Cart Button */}
@@ -214,6 +270,41 @@ const Navigation = ({ cartItemsCount = 0, onCartClick }: NavigationProps) => {
                   closed: { transition: { staggerChildren: 0.03, staggerDirection: -1 } }
                 }}
               >
+                {/* Battery Categories */}
+                <motion.div
+                  className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider"
+                  variants={{
+                    open: { x: 0, opacity: 1 },
+                    closed: { x: -20, opacity: 0 }
+                  }}
+                >
+                  Nos Batteries
+                </motion.div>
+                {batteryCategories.map((cat) => (
+                  <motion.div
+                    key={cat.href}
+                    variants={{
+                      open: { x: 0, opacity: 1 },
+                      closed: { x: -20, opacity: 0 }
+                    }}
+                    transition={{ duration: duration.fast }}
+                  >
+                    <Link 
+                      to={cat.href}
+                      onClick={() => setMobileMenuOpen(false)} 
+                      className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className={`w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center ${cat.color}`}>
+                        <cat.icon className="w-4 h-4" />
+                      </div>
+                      <span>{cat.label}</span>
+                      <span className="ml-auto text-xs text-gray-400">{cat.count}</span>
+                    </Link>
+                  </motion.div>
+                ))}
+
+                <div className="h-px bg-gray-100 my-2" />
+
                 {navLinks.map((link, index) => (
                   <motion.a 
                     key={link.href + index}
