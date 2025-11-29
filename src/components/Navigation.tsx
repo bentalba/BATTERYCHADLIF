@@ -38,7 +38,7 @@ const Navigation = ({ cartItemsCount = 0, onCartClick }: NavigationProps) => {
   const [batteriesDropdownOpen, setBatteriesDropdownOpen] = useState(false);
 
   const batteryCategories = [
-    { href: '/batteries-voiture', label: 'Batteries Voiture', icon: Car, color: 'text-[#0071E3]', count: '192' },
+    { href: '/batteries-voiture', label: 'Batteries Voiture', icon: Car, color: 'text-[#0071E3]', count: '190' },
     { href: '/batteries-poids-lourd', label: 'Batteries Poids Lourds', icon: Truck, color: 'text-[#FF6B00]', count: '22' },
     { href: '/batteries-marine', label: 'Batteries Marine', icon: Anchor, color: 'text-cyan-500', count: '20' },
   ];

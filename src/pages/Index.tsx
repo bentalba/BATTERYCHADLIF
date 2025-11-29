@@ -507,7 +507,7 @@ const Index = () => {
                 className="group relative p-8 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-3xl border-2 border-blue-100 hover:border-[#0071E3] transition-all duration-300 cursor-pointer overflow-hidden"
               >
                 <div className="absolute top-4 right-4 px-3 py-1 bg-[#0071E3] text-white text-xs font-bold rounded-full">
-                  192 produits
+                  190 produits
                 </div>
                 <div className="flex flex-col items-center text-center space-y-4">
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0071E3] to-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/25 group-hover:scale-110 transition-transform duration-300">
